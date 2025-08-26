@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>بوابة الدخول ⇢ المقاطع</title>
+  <style>
+    :root{
+      --glass: rgba(255,255,255,.12);
+      --border: rgba(255,255,255,.25);
+      --txt: #fff;
+      --ok: #22c55e;
+      --warn:#f59e0b;
+      --err:#ef4444;
+    }
+
+    /* خلفية متغيرة الألوان */
+    body{
+      margin:0;min-height:100svh;color:var(--txt);font-family:system-ui,Segoe UI,Roboto,Arial;
+      background: linear-gradient(120deg,#4f46e5,#ec4899,#22c55e,#06b6d4,#f59e0b);
+      background-size: 400% 400%;
+      animation: gradientShift 16s ease infinite;
+      display:grid;place-items:center;
+    }
+    @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+    /* تأثير نص متغير اللون */
+    .dx1-text{
+      font-size:28px;font-weight:900;
+      background: linear-gradient(90deg,#000000,#ffe16a,#34b4ff,#ff4848,#ffffff,#f472b6);
+      background-size:400%;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      animation: hue 8s linear infinite;
+    }
+    @keyframes hue{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+
+    .card{width:min(92vw,860px);margin:24px;backdrop-filter: blur(14px) saturate(120%);
+      background: var(--glass);border:1px solid var(--border);
+      box-shadow:0 20px 60px rgba(0,0,0,.25);border-radius:24px;overflow:hidden;}
+    .header{padding:22px 26px;display:flex;gap:12px;align-items:center;justify-content:space-between;background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.04));}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:38px;height:38px;border-radius:14px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-weight:800}
+    .title{font-size:22px;font-weight:800;letter-spacing:.3px}
+
+    .content{padding:26px}
+    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+    input[type=password]{flex:1;min-width:220px;border-radius:16px;border:1px solid var(--border);
+      background: rgba(0,0,0,.25);padding:16px 18px;color:var(--txt);font-size:16px;
+      outline:none;transition:.25s;}
+    input[type=password]:focus{box-shadow:0 0 0 6px rgba(255,255,255,.12);}
+
+    .btn, a.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;
+      padding:14px 18px;border-radius:16px;border:1px solid var(--border);
+      background:rgba(255,255,255,.15);color:var(--txt);text-decoration:none;
+      cursor:pointer;transition:transform .08s ease, filter .25s ease;
+      user-select:none}
+    .btn:hover{filter:brightness(1.08)}
+    .btn:active{transform:translateY(1px) scale(.99)}
+    .btn.ok{background: rgba(34,197,94,.2)}
+    .btn.warn{background: rgba(245,158,11,.2)}
+    
+    .note{opacity:.9}
+    .hint{font-size:13px;opacity:.8;margin-top:10px}
+    .hidden{display:none!important}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+    video{width:100%;border-radius:14px;outline:none}
+    .cardV{border:1px solid var(--border);border-radius:18px;overflow:hidden;
+      background: rgba(0,0,0,.25);padding:12px;}
+
+    .status{font-size:13px;padding:6px 10px;border-radius:999px;display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);background:rgba(0,0,0,.25)}
+    .dot{width:10px;height:10px;border-radius:99px;background:var(--err)}
+
+    .flash{position:fixed;inset:0;pointer-events:none}
+    .flash::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at center, rgba(255,255,255,.45), transparent 55%);opacity:0;animation:pop .7s ease}
+    @keyframes pop{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+
+    dialog{border:none;border-radius:20px;max-width:min(92vw,560px);width:100%;background:rgba(20,20,20,.9);color:#fff;padding:0;overflow:hidden}
+    dialog::backdrop{background:rgba(0,0,0,.45)}
+    .dlg-h{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.04))}
+    .dlg-b{padding:18px 20px}
+
+    #gate{display:block}
+    #videos{display:none}
+    body.videos #gate{display:none}
+    body.videos #videos{display:block}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">DX1</div>
+        <div class="title">بوابة الدخول ⇢ صفحة المقاطع</div>
+      </div>
+      <div class="status"><span class="dot" id="dot"></span><span id="statTxt">مغلق</span></div>
+    </div>
+
+    <!-- شاشة كلمة السر -->
+    <section id="gate" class="content">
+      <p class="note">اكتب كلمة السر الصحيحة للدخول إلى صفحة المقاطع.</p>
+      <div class="row" style="margin-top:14px">
+        <input id="pass" type="password" placeholder="كلمة السر" autocomplete="current-password" />
+        <button id="enterBtn" class="btn ok" type="button">دخول</button>
+        <a class="btn warn" id="getPassBtn" href="#" role="button">الحصول على كلمة السر</a>
+      </div>
+     
+    </section>
+
+    <!-- صفحة المقاطع -->
+    <section id="videos" class="content">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+        <h2 style="margin:0">🔗 مقاطع الفيديو</h2>
+        <div class="row">
+          <a class="btn" href="#" id="logout">تسجيل خروج</a>
+          <a class="btn" href="#top" id="topBtn">أعلى الصفحة</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="cardV">
+          <video controls src="https://xnxx.com.se/xhr/video/2642857-f2c7ec0f4ce58b1d.mp4"></video>
+          <div style="margin-top:8px">مقطع 1</div>
+        </div>
+        <div class="cardV">
+          <video controls src="https://xnxx.com.se/xhr/video/1641988-77db99077e15589c.mp4"></video>
+          <div style="margin-top:8px">مقطع 2</div>
+        </div>
+        <div class="cardV">
+          <video controls src="https://cdn77-vid-mp4.xvideos-cdn.com/1vDTOB16_IpwJJyHNa74Mg==,1756063033/videos/mp4/b/f/5/xvideos.com_bf567f2fc313743e317e339876d3497d.mp4?ui=MTc5LjQzLjE1OC41OC0tL3ZpZGVvLm9oY2liZGszMGY4L2hhcmRjb3JlX3Nl"></video>
+          <div style="margin-top:8px">مقطع 3</div>
+        </div>
+      </div>
+
+      <p class="hint"> <span class="dx1-text">DX1</span></p>
+    </section>
+  </div>
+
+  <dialog id="dlg">
+    <div class="dlg-h">
+      <strong>الحصول على كلمة السر</strong>
+      <button class="btn" id="closeDlg" style="margin-inline-start:auto">إغلاق</button>
+    </div>
+    <div class="dlg-b">
+      <p>للحصول على كلمة السر الرجاء التواصل مع حسابي في تيكتوك:</p>
+      <a class="btn ok" href="https://www.tiktok.com/@dx1.new" target="_blank">dx1.new@</a>
+    </div>
+  </dialog>
+
+  <div id="flash" class="flash hidden"></div>
+
+  <script>
+    const SECRET_PLAIN = "local-518129"; // كلمة السر الجديدة
+    const SECRET = btoa(SECRET_PLAIN);
+
+    const pass = document.getElementById('pass');
+    const enterBtn = document.getElementById('enterBtn');
+    const getPassBtn = document.getElementById('getPassBtn');
+    const dot = document.getElementById('dot');
+    const statTxt = document.getElementById('statTxt');
+    const flash = document.getElementById('flash');
+    const dlg = document.getElementById('dlg');
+    const closeDlg = document.getElementById('closeDlg');
+
+    const unlocked = sessionStorage.getItem('videos_unlocked') === '1';
+    if(unlocked){ openVideos(false); }
+
+    enterBtn.addEventListener('click', tryLogin);
+    pass.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryLogin(); });
+
+    function tryLogin(){
+      const ok = btoa(pass.value.trim()) === SECRET;
+      if(ok){
+        sessionStorage.setItem('videos_unlocked','1');
+        flash.classList.remove('hidden');
+        setTimeout(()=>flash.classList.add('hidden'), 700);
+        openVideos(true);
+      }else{
+        statTxt.textContent = 'كلمة السر غير صحيحة';
+        dot.style.background = getComputedStyle(document.documentElement).getPropertyValue('--err');
+        pass.focus();
+        pass.select();
+      }
+    }
+
+    function openVideos(push=true){
+      document.body.classList.add('videos');
+      statTxt.textContent = 'مفتوح';
+      dot.style.background = getComputedStyle(document.documentElement).getPropertyValue('--ok');
+      if(push){ history.pushState({p:'videos'}, '', '?page=videos'); }
+      scrollTo({top:0,behavior:'smooth'});
+    }
+
+    document.getElementById('logout').addEventListener('click', (e)=>{
+      e.preventDefault();
+      sessionStorage.removeItem('videos_unlocked');
+      document.body.classList.remove('videos');
+      statTxt.textContent = 'مغلق';
+      dot.style.background = getComputedStyle(document.documentElement).getPropertyValue('--err');
+      history.pushState({p:'gate'}, '', location.pathname);
+    });
+
+    document.getElementById('topBtn').addEventListener('click', (e)=>{
+      e.preventDefault();
+      scrollTo({top:0,behavior:'smooth'});
+    });
+
+    getPassBtn.addEventListener('click', (e)=>{ e.preventDefault(); dlg.showModal(); });
+    closeDlg.addEventListener('click', ()=> dlg.close());
+
+    if(new URLSearchParams(location.search).get('page') === 'videos'){
+      if(unlocked){ openVideos(false); }
+    }
+  </script>
+</body>
+</html>
