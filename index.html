@@ -17,7 +17,10 @@
     /* خلفية متغيرة الألوان */
     body{
       margin:0;min-height:100svh;color:var(--txt);font-family:system-ui,Segoe UI,Roboto,Arial;
-      background: linear-gradient(120deg,#4f46e5,#ec4899,#22c55e,#06b6d4,#f59e0b);
+    
+  background: linear-gradient(120deg, var(--g1), var(--g2));
+  background-size: 400% 400%;
+  animation: gradientShift 12s linear infinite;
       background-size: 400% 400%;
       animation: gradientShift 16s ease infinite;
       display:grid;place-items:center;
@@ -124,15 +127,15 @@
 
       <div class="grid">
         <div class="cardV">
-          <video controls src="https://v2.cdnde.com/x2/upload_6e98c1a8e17d2b3a4a1840055bed7412/43689/JOPORN_NET_43689_720p.mp4"></video>
+          <video controls src="https://v1.cdnde.com/x1/upload_f27c9ee13342ef5f73e5aa5dbe96b9a6/44090/JOPORN_NET_44090_480p.mp4"></video>
           <div style="margin-top:8px">يتم تجديد المقاطع كل 24 ساعة عمل</div>
         </div>
         <div class="cardV">
-          <video controls src="https://v1.cdnde.com/x1/upload_f27c9ee13342ef5f73e5aa5dbe96b9a6/44062/JOPORN_NET_44062_480p.mp4"></video>
+          <video controls src="https://v5.cdnde.com/x5/upload_c5e2067acd5b89dd22bb94f31a3ead3d/44057/JOPORN_NET_44057_480p.mp4"></video>
           <div style="margin-top:8px">يتم تجديد المقاطع كل 24 ساعة عمل</div>
         </div>
         <div class="cardV">
-          <video controls src="https://v2.cdnde.com/x2/upload_6e98c1a8e17d2b3a4a1840055bed7412/42394/JOPORN_NET_42394_720p.mp4"></video>
+          <video controls src="https://v6.cdnde.com/x6/upload_71393040e3c5d7f25be71e2c962eca11/44083/JOPORN_NET_44083_480p.mp4"></video>
           <div style="margin-top:8px">يتم تجديد المقاطع كل 24 ساعة عمل</div>
         </div>
       </div>
@@ -217,5 +220,95 @@
       if(unlocked){ openVideos(false); }
     }
   </script>
+  <!-- أزرار اختيار الثيم -->
+<!-- أزرار اختيار الثيم -->
+<div class="themes">
+  <button class="swatch black" data-g1="#000000" data-g2="#1a1a1a"></button>
+  <button class="swatch" data-g1="#ff7a18" data-g2="#f59e0b"></button>
+  <button class="swatch" data-g1="#f472b6" data-g2="#fb7185"></button>
+  <button class="swatch" data-g1="#3b82f6" data-g2="#60a5fa"></button>
+  <button class="swatch" data-g1="#22c55e" data-g2="#4ade80"></button>
+  <button class="swatch" data-g1="#facc15" data-g2="#fde68a"></button>
+</div>
+
+
+<style>
+  .themes {display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .swatch {
+    width:40px; height:40px; border-radius:12px; border:2px solid rgba(255,255,255,.12);
+    cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .swatch:hover {transform:translateY(-3px); box-shadow:0 10px 22px rgba(0,0,0,.3);}
+</style>
+
+<script>
+  // ضبط اللون الافتراضي عند تحميل الصفحة (أسود)
+  document.documentElement.style.setProperty('--g1', '#000000');
+  document.documentElement.style.setProperty('--g2', '#333333');
+
+  const swatches = document.querySelectorAll('.swatch');
+  swatches.forEach(btn => {
+    btn.addEventListener('click', ()=>{
+      const g1 = btn.dataset.g1;
+      const g2 = btn.dataset.g2;
+      document.documentElement.style.setProperty('--g1', g1);
+      document.documentElement.style.setProperty('--g2', g2);
+    });
+  });
+</script>
+
+<style>.themes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.swatch {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0,0,0,0.4);
+  transition: transform 0.2s;
+}
+
+/* تأثير عند التمرير */
+.swatch:hover {
+  transform: scale(1.1);
+}
+
+/* الخلفية الافتراضية: أسود متحرك */
+.swatch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(270deg,#b22d2d,#47d2b4,#e68a3e,#69db69);
+  background-size: 400% 400%;
+  animation: gradientMove 6s ease infinite;
+  z-index: -1;
+}
+
+/* زر الأسود */
+.swatch.black {
+  background: none !important; /* يخليه بس متحرك */
+}
+.swatch {
+  background: none !important; /* يخليه بس متحرك */
+}
+
+/* الحركة */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+</style>
+
 </body>
 </html>
