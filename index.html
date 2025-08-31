@@ -309,6 +309,22 @@
   100% { background-position: 0% 50%; }
 }
 </style>
+  <script>
+// منع الكلك يمين
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// منع أزرار الفحص (F12 + Ctrl+Shift+I + Ctrl+Shift+J + Ctrl+U)
+document.addEventListener('keydown', e => {
+  if (
+    e.key === "F12" || 
+    (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
+    (e.ctrlKey && e.key === "U")
+  ) {
+    e.preventDefault();
+  }
+});
+  </script>
 
 </body>
 </html>
+
